@@ -6,7 +6,7 @@ document with page references. Also generates summaries and quizzes (MCQ + short
 ## Architecture
 PDF -> pypdf text extraction -> overlapping chunks (page metadata) -> Gemini embeddings
 (`gemini-embedding-001`) -> in-memory vector store (NumPy cosine similarity) ->
-top-k retrieval -> Gemini (`gemini-2.5-flash`) answer with citations.
+top-k retrieval -> Gemini (`gemini-3.5-flash-lite`, selectable in the sidebar) answer with citations.
 
 ## Setup (Python 3.11+)
 ```bash
@@ -27,8 +27,11 @@ pytest -v      # offline tests, no API key needed
 - `tests/test_rag.py` - unit tests
 
 ## Limitations
-- Scanned/image-only PDFs have no extractable text (OCR not included).
-- Index is in memory and rebuilt per session.
+- Scanned/image-only PDFs are read with Gemini vision OCR (slower, one extra API call per file).
+- The vector index is in memory and rebuilt per session; extracted text is cached in `.cache/` (git-ignored).
+- The free Gemini tier has daily request limits; temporary errors (429/503) are retried automatically.
 - Very long documents are truncated to ~60k characters for summaries and quizzes.
 
 Never commit `.env`. It is listed in `.gitignore`.
+
+To use a different Gemini model, add `GEMINI_MODEL=model-name` to `.env`.
