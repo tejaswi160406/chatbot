@@ -1,0 +1,6 @@
+streamlit>=1.40
+google-genai>=1.0
+pypdf>=5.0
+numpy>=1.26
+python-dotenv>=1.0
+pytest>=8.0
